@@ -1,0 +1,42 @@
+# Author: Bishal Sarang
+
+# Import Visualiser class from module visualiser
+from visualiser.visualiser import Visualiser as vs
+import sys
+# Add decorator
+# Decorator accepts optional arguments: ignore_args , show_argument_name, show_return_value and node_properties_kwargs
+@vs(node_properties_kwargs={"shape":"record", "color":"#f57542", "style":"filled", "fillcolor":"grey"})
+def solve(coins, amount, memo):
+        # Base case: If the amount is 0, no coins needed.
+        if amount == 0:
+            return 0
+
+        # If the result for the current amount is already memoized, return it.
+        if memo[amount] != -1:
+            return memo[amount]
+
+        # Initialize the answer to the maximum integer value to find the minimum later.
+        ans = sys.maxsize
+
+        # Iterate through each coin denomination.
+        for coin in coins:
+            # If subtracting the current coin amount is a valid amount.
+            if amount - coin >= 0:
+                # Recursively calculate the minimum number of coins needed.
+                ans = min(ans, solve(coins, amount - coin, memo) + 1)
+
+        # Memoize the result for the current amount.
+        memo[amount] = ans
+        return ans
+
+
+def main():
+    # Call function
+    memo = [-1] * (11 + 1)
+    print(solve([1, 2, 5], 11, memo))
+    # Save recursion tree to a file
+    vs.make_animation("coin.gif", delay=2)
+
+
+if __name__ == "__main__":
+    main()
